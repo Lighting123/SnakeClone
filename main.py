@@ -16,19 +16,41 @@ DIRECTION_DOWN = 4
 
 size = 1
 
-def draw_snake(direction):
-    snake = pygame.Surface((50, 50))
-    snake.fill('lightgreen')
-    snake_rect_list = []
-    for i in range(size):
-        if len(snake_rect_list) == 0:
-            snake_rect_list.append(pygame.draw.rect(snake, 'darkgreen', (0, 0, 8, 6)))
-        else:
-            last_snake_rect = snake_rect_list[-1]
-            snake_rect_list.append(pygame.draw.rect(snake, 'darkgreen', (last_snake_rect.left+8, 0, 8, 6)))
-    snake_rect_list.append(pygame.draw.rect(snake, 'darkgreen', (snake_rect_list[-1].left+8, 0, 8, 6)))
 
-    return snake
+class Snake:
+    def __init__(self, direction):
+        self.direction = direction
+        self.snake = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
+        self.snake_rect = pygame.Rect(0, 0, 0, 0)
+
+    def draw_snake_on_screen(self):
+        self.snake.fill('lightgreen')
+
+        if self.snake_rect.left >= WINDOW_WIDTH:
+            self.snake_rect.left = 0
+
+        for i in range(size):
+            # if it is the first snake part, draw it at coordinate 0, 0
+            if i == 0:
+                pygame.draw.rect(self.snake, 'darkgreen', (self.snake_rect.left, 0, 8, 6))
+            else:
+                pygame.draw.rect(self.snake, 'darkgreen', (self.snake_rect.left + 8*i, 0, 8, 6))
+
+        pygame.draw.rect(self.snake, 'darkgreen', (self.snake_rect.left + 8*size, 0, 8, 6))
+
+    def move(self):
+        if self.direction == DIRECTION_LEFT:
+            self.snake_rect.left += 2
+        elif self.direction == DIRECTION_RIGHT:
+            pass
+        elif self.direction == DIRECTION_UP:
+            pass
+        elif self.direction == DIRECTION_DOWN:
+            pass
+
+
+snake = Snake(DIRECTION_LEFT)
+snake.draw_snake_on_screen()
 
 while running:
     # event loop
@@ -38,7 +60,10 @@ while running:
 
     # Render game
     screen.fill('lightgreen')
-    screen.blit(draw_snake(DIRECTION_LEFT), (0, 0))
+
+    snake.move()
+    snake.draw_snake_on_screen()
+    screen.blit(snake.snake, (0, 0))
 
     pygame.display.update()
 
