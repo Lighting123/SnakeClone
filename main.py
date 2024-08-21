@@ -5,6 +5,7 @@ pygame.init()
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 500
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+pygame.display.set_caption('Snake clone')
 clock = pygame.time.Clock()
 running = True
 
@@ -28,6 +29,8 @@ class Snake:
 
         if self.snake_rect.left >= WINDOW_WIDTH:
             self.snake_rect.left = 0
+        elif self.snake_rect.left <= 0:
+            self.snake_rect.left = WINDOW_WIDTH
 
         for i in range(size):
             # if it is the first snake part, draw it at coordinate 0, 0
@@ -40,13 +43,16 @@ class Snake:
 
     def move(self):
         if self.direction == DIRECTION_LEFT:
-            self.snake_rect.left += 2
+            self.snake_rect.left -= 2
         elif self.direction == DIRECTION_RIGHT:
-            pass
+            self.snake_rect.left += 2
         elif self.direction == DIRECTION_UP:
             pass
         elif self.direction == DIRECTION_DOWN:
             pass
+
+    def change_direction(self, direction):
+        self.direction = direction
 
 
 snake = Snake(DIRECTION_LEFT)
@@ -60,6 +66,16 @@ while running:
 
     # Render game
     screen.fill('lightgreen')
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_w]:
+        snake.change_direction(DIRECTION_UP)
+    if keys[pygame.K_s]:
+        snake.change_direction(DIRECTION_DOWN)
+    if keys[pygame.K_a]:
+        snake.change_direction(DIRECTION_LEFT)
+    if keys[pygame.K_d]:
+        snake.change_direction(DIRECTION_RIGHT)
 
     snake.move()
     snake.draw_snake_on_screen()
